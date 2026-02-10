@@ -1,0 +1,21 @@
+name: Build Executor
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Dylib
+        run: |
+          clang++ -dynamiclib -arch arm64 \
+          -isysroot $(xcrun --sdk iphoneos --show-sdk-path) \
+          -o MyExecutor.dylib main.cpp \
+          -std=c++17
+          
+      - name: Upload Dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: Executor-File
+          path: MyExecutor.dylib
